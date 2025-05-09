@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noteify</title>
+    <link rel="stylesheet" href="noteify.css">
+</head>
+
+<body>
+    <svg style="display: none;" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <symbol id="icon-moon" viewBox="0 0 24 24">
+                <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"/>
+            </symbol>
+            <symbol id="icon-sun" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2"/>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    stroke-linecap="round"/>
+            </symbol>
+            <symbol id="icon-folder" viewBox="0 0 24 24">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" fill="none"
+                    stroke="currentColor" stroke-width="2" />
+            </symbol>
+            <symbol id="icon-trash" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18" />
+                    <path d="M10 6V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2" />
+                    <rect x="5" y="6" width="14" height="16" rx="2" ry="2" />
+                    <line x1="10" y1="11" x2="10" y2="17" />
+                    <line x1="14" y1="11" x2="14" y2="17" />
+                </g>
+            </symbol>
+            <symbol id="icon-arrow" viewBox="0 0 24 24">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </symbol>
+            <symbol id="icon-align-left" viewBox="0 0 24 24">
+                <path d="M3 6h18M3 12h12M3 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </symbol>
+            <symbol id="icon-align-center" viewBox="0 0 24 24">
+                <path d="M3 6h18M6 12h12M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </symbol>
+            <symbol id="icon-align-right" viewBox="0 0 24 24">
+                <path d="M3 6h18M9 12h12M5 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="app-header">
+                <div class="note-type-wrapper">
+                    <button class="note-type-selector">School</button>
+                    <div class="note-type-dropdown" id="noteTypeDropdown">
+                        <div data-type="School">School</div>
+                        <div data-type="Work">Work</div>
+                        <div data-type="Everyday">Everyday</div>
+                        <div data-type="Other">Other</div>
+                    </div>
+                    <button class="calendar-btn" id="calendarBtn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2H4C2.89543 2 2 2.89543 2 4V12C2 13.1046 2.89543 14 4 14H12C13.1046 14 14 13.1046 14 12V4C14 2.89543 13.1046 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M2 6H14" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M6 2V4" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M10 2V4" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                </div>
+                <button class="toggle-theme" id="themeToggle">
+                    <span class="icon">
+                        <svg>
+                            <use href="#icon-moon" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <div class="app-header">
+                <div class="app-title">Noteify</div>
+            </div>
+            <button class="add-btn" id="addFolderNoteBtn">
+                <span>Add folder/note</span>
+                <span class="icon">
+                    <svg>
+                        <use href="#icon-folder" />
+                    </svg>
+                </span>
+            </button>
+
+            <div class="calendar-popup" id="calendarPopup">
+                <div class="calendar-header">
+                    <div class="calendar-title">May 2025</div>
+                    <div class="calendar-nav">
+                        <button id="prevMonth">←</button>
+                        <button id="nextMonth">→</button>
+                    </div>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-weekday">Sun</div>
+                    <div class="calendar-weekday">Mon</div>
+                    <div class="calendar-weekday">Tue</div>
+                    <div class="calendar-weekday">Wed</div>
+                    <div class="calendar-weekday">Thu</div>
+                    <div class="calendar-weekday">Fri</div>
+                    <div class="calendar-weekday">Sat</div>
+                </div>
+            </div>
+            <div class="folder-list" id="folderList">
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="editor-container" id="editorContainer" style="display: none;">
+                <div class="editor-header">
+                    <input type="text" placeholder="Header type here!" id="noteTitle">
+                </div>
+                <div class="editor-content">
+                    <div contenteditable="true" id="noteBody" data-placeholder="Type here..."></div>
+                </div>
+            </div>
+            <div class="empty-state" id="emptyState"
+                style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                <div style="text-align: center; color: var(--text-color);">
+                    <h2>No Note Selected</h2>
+                    <p>Select a note from the sidebar or create a new one to start editing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons" id="actionButtons">
+        <button id="addFolderBtn">Add Folder</button>
+        <button id="addNoteBtn">Add Note</button>
+    </div>
+
+    <div class="formatting-toolbar" id="formattingToolbar">
+        <button data-command="bold" title="Bold"><strong>B</strong></button>
+        <button data-command="italic" title="Italic"><em>I</em></button>
+        <button data-command="underline" title="Underline"><u>U</u></button>
+        <span class="separator"></span>
+        <select class="font-size-selector" title="Font Size">
+            <option value="1">Small</option>
+            <option value="3" selected>Normal</option>
+            <option value="5">Large</option>
+            <option value="7">Huge</option>
+        </select>
+        <span class="separator"></span>
+        <button data-command="justifyLeft" title="Align Left">
+            <svg class="toolbar-icon"><use href="#icon-align-left"/></svg>
+        </button>
+        <button data-command="justifyCenter" title="Center">
+            <svg class="toolbar-icon"><use href="#icon-align-center"/></svg>
+        </button>
+        <button data-command="justifyRight" title="Align Right">
+            <svg class="toolbar-icon"><use href="#icon-align-right"/></svg>
+        </button>
+        <span class="separator"></span>
+        <button data-command="insertOrderedList" title="Numbered List">1.</button>
+        <button data-command="insertUnorderedList" title="Bullet List">•</button>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-container">
+            <h3 class="modal-title" id="modalTitle">Title</h3>
+            <input type="text" class="modal-input" id="modalInput" style="display: none">
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="modalCancel">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" id="modalConfirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="noteify.js"></script>
+</body>
+
+</html>
