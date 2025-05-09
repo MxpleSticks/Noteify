@@ -1,0 +1,845 @@
+:root {
+    --bg-color: #fff;
+    --text-color: #333;
+    --border-color: #ddd;
+    --panel-bg: #f9f9f9;
+    --button-bg: #f0f0f0;
+    --button-hover: #e0e0e0;
+    --accent-color: #4a90e2;
+}
+
+.dark-mode {
+    --bg-color: #222;
+    --text-color: #eee;
+    --border-color: #444;
+    --panel-bg: #333;
+    --button-bg: #444;
+    --button-hover: #555;
+    --accent-color: #5a9cf0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding: 0;
+}
+
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    border: none;
+    border-radius: 0;
+}
+
+.sidebar {
+    width: 280px;
+    border-right: 1px solid var(--border-color);
+    background-color: var(--panel-bg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: var(--bg-color);
+    height: 100vh;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.app-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.toggle-theme {
+    background: var(--button-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.toggle-theme:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+    border-color: var(--border-color);
+}
+
+.add-btn {
+    display: flex;
+    align-items: center;
+    background-color: var(--button-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 15px;
+    margin: 15px;
+    cursor: pointer;
+    color: var(--text-color);
+    justify-content: space-between;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+    border-color: var(--border-color);
+}
+
+.add-btn i {
+    margin-left: 5px;
+}
+
+.folder-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 15px;
+    height: calc(100vh - 160px);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.folder-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.folder-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.folder-list::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+.folder-item {
+    margin: 10px 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.folder-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--button-bg);
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.folder-header:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+    border-color: var(--border-color);
+}
+
+.folder-name {
+    font-weight: bold;
+}
+
+.folder-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.folder-arrow svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.folder-arrow.expanded svg {
+    transform: rotate(0deg);
+}
+
+.folder-header:hover .folder-arrow svg {
+    transform: rotate(-80deg);
+}
+
+.folder-header:hover .folder-arrow.expanded svg {
+    transform: rotate(10deg);
+}
+
+.note-list {
+    display: none;
+    padding: 5px 0;
+}
+
+.note-list.expanded {
+    display: block;
+}
+
+.note-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 5px 0;
+    border-radius: 8px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.note-item:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+    border-color: var(--border-color);
+}
+
+.note-item.active {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.note-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.delete-note {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 14px;
+}
+
+.delete-note:hover {
+    opacity: 1;
+    color: #ff4444;
+}
+
+.delete-note:hover svg {
+    color: #ff4444;
+}
+
+.create-note {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 5px 0;
+    border-radius: 8px;
+    background-color: var(--button-bg);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-note:hover {
+    background-color: var(--button-hover);
+    transform: translateY(-1px);
+    border-color: var(--border-color);
+}
+
+.create-note-icon {
+    color: var(--text-color);
+}
+
+.note-type-selector {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 12px;
+    height: 32px;
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.note-type-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    height: 32px;
+}
+
+.note-type-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 5px 0;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 100;
+    transform-origin: top center;
+    margin-top: 5px;
+}
+
+.editor-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-header {
+    margin-bottom: 20px;
+}
+
+.editor-header input {
+    font-size: 28px;
+    background: none;
+    border: none;
+    width: 100%;
+    color: var(--text-color);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    outline: none;
+    font-weight: 300;
+}
+
+.editor-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.editor-content div {
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.editor-content [contenteditable] {
+    outline: none;
+    min-height: 100px;
+}
+
+.placeholder {
+    color: #999;
+}
+
+.action-buttons {
+    position: absolute;
+    display: none;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transform-origin: top center;
+    animation: dropDown 0.3s ease forwards;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-buttons button {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    text-align: left;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-buttons button:hover {
+    background-color: var(--button-hover);
+    padding-left: 20px;
+}
+
+.action-buttons button::before {
+    content: '→';
+    position: absolute;
+    left: -20px;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.action-buttons button:hover::before {
+    left: 5px;
+    opacity: 1;
+}
+
+@keyframes dropDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+[contenteditable][data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: #999;
+    font-style: italic;
+}
+
+[contenteditable][data-placeholder]:empty:focus:before {
+    content: attr(data-placeholder);
+}
+
+.note-type-dropdown.dropdown-active {
+    display: block;
+    animation: dropDown 0.3s ease forwards;
+}
+
+.note-type-dropdown div {
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.note-type-dropdown div:hover {
+    background-color: var(--button-hover);
+    padding-left: 25px;
+}
+
+.note-type-dropdown div::before {
+    content: '→';
+    position: absolute;
+    left: -20px;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.note-type-dropdown div:hover::before {
+    left: 10px;
+    opacity: 1;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.toggle-theme .icon {
+    width: 24px;
+    height: 24px;
+}
+
+.delete-note .icon,
+.delete-folder .icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.delete-note:hover .icon,
+.delete-folder:hover .icon {
+    transform: scale(1.2) rotate(15deg);
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        height: 90vh;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: 300px;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .main-content {
+        height: calc(100% - 300px);
+    }
+
+    .folder-list {
+        height: calc(300px - 160px);
+    }
+}
+
+.formatting-toolbar {
+    position: fixed;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 3px;
+    display: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.formatting-toolbar button {
+    background: none;
+    border: none;
+    padding: 3px 6px;
+    margin: 0 1px;
+    cursor: pointer;
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+.formatting-toolbar button:hover {
+    background-color: var(--button-hover);
+}
+
+.formatting-toolbar .separator {
+    width: 1px;
+    height: 16px;
+    background-color: var(--border-color);
+    margin: 0 3px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.formatting-toolbar .font-size-selector {
+    background-color: var(--button-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.formatting-toolbar .font-size-selector:hover {
+    background-color: var(--button-hover);
+}
+
+.toolbar-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.folder-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.delete-folder {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    opacity: 0.5;
+    padding: 2px;
+}
+
+.delete-folder:hover {
+    opacity: 1;
+    color: #ff4444;
+}
+
+.delete-folder .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.folder-header:hover .delete-folder {
+    opacity: 0.8;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 24px;
+    width: 320px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    transform-origin: center;
+    animation: modalSlideUp 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active .modal-container {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.modal-overlay.closing {
+    opacity: 0;
+}
+
+.modal-overlay.closing .modal-container {
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.modal-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: border-color 0.2s ease;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.modal-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.modal-btn-cancel {
+    background-color: var(--button-bg);
+    color: var(--text-color);
+}
+
+.modal-btn-confirm {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.modal-btn:hover {
+    transform: translateY(-1px);
+}
+
+.modal-btn-cancel:hover {
+    background-color: var(--button-hover);
+}
+
+.modal-btn-confirm:hover {
+    filter: brightness(1.1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.calendar-btn {
+    background: var(--button-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.calendar-btn:hover {
+    background: var(--button-hover);
+    transform: translateY(-1px);
+}
+
+.calendar-popup {
+    position: fixed;
+    background: var(--bg-color);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    border: 1px solid var(--border-color);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    transform: translateY(-10px);
+}
+
+.calendar-popup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.calendar-popup.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-nav button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-nav button:hover {
+    background: var(--button-hover);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+.calendar-day {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.calendar-day:hover {
+    background: var(--button-hover);
+}
+
+.calendar-day.today {
+    background: var(--accent-color);
+    color: white;
+}
+
+.calendar-day.selected {
+    background: var(--accent-color);
+    color: white;
+}
+
+.calendar-weekday {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    padding: 5px 0;
+    font-weight: 500;
+}
+
+@keyframes calendarSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
