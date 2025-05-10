@@ -122,7 +122,10 @@
         <div class="main-content">
             <div class="editor-container" id="editorContainer" style="display: none;">
                 <div class="editor-header">
-                    <input type="text" placeholder="Header type here!" id="noteTitle">
+                    <div class="editor-header-content">
+                        <input type="text" placeholder="Header type here!" id="noteTitle">
+                        <div class="word-count" id="wordCount">0 words | 0 chars</div>
+                    </div>
                 </div>
                 <div class="editor-content">
                     <div contenteditable="true" id="noteBody" data-placeholder="Type here..."></div>
