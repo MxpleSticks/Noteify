@@ -350,70 +350,128 @@ function initializeRichTextEditor() {
     editor.contentEditable = 'true';
     document.execCommand('defaultParagraphSeparator', false, 'p');
 
-    // Show toolbar when text is selected
-    editor.addEventListener('mouseup', updateToolbarPosition);
+    // Show toolbar when editor is focused
+    editor.addEventListener('focus', () => {
+        toolbar.style.display = 'block';
+        updateToolbarPosition();
+    });
+
+    // Hide toolbar when editor loses focus (unless selecting text)
+    editor.addEventListener('blur', (e) => {
+        // Don't hide if clicking toolbar
+        if (e.relatedTarget && toolbar.contains(e.relatedTarget)) {
+            return;
+        }
+        if (!window.getSelection().toString()) {
+            toolbar.style.display = 'none';
+        }
+    });
+
+    // Update toolbar position on key events and mouse movement
     editor.addEventListener('keyup', updateToolbarPosition);
+    editor.addEventListener('click', updateToolbarPosition);
+    editor.addEventListener('mouseup', updateToolbarPosition);
+
+    // Handle cursor movement
+    editor.addEventListener('input', updateToolbarPosition);
+
+    // Update on scroll
+    editor.addEventListener('scroll', updateToolbarPosition);
+    window.addEventListener('scroll', updateToolbarPosition);
 
     // Handle toolbar buttons
-    toolbar.addEventListener('click', (e) => {
+    toolbar.addEventListener('mousedown', (e) => {
+        // Prevent editor from losing focus
+        e.preventDefault();
         const button = e.target.closest('button');
         if (!button) return;
 
-        e.preventDefault();
         const command = button.dataset.command;
         document.execCommand(command, false, null);
+        updateToolbarState();
     });
 
     // Handle font size selection
     const fontSizeSelector = toolbar.querySelector('.font-size-selector');
     fontSizeSelector.addEventListener('change', (e) => {
         document.execCommand('fontSize', false, e.target.value);
-        editor.focus(); // Return focus to editor
+        editor.focus();
     });
 
-    // Prevent toolbar from stealing focus
-    toolbar.addEventListener('mousedown', (e) => {
-        if (e.target.tagName !== 'SELECT') {
-            e.preventDefault();
-        }
-    });
+    // Update toolbar state on selection change
+    document.addEventListener('selectionchange', updateToolbarState);
 }
 
-// Replace the existing updateToolbarPosition function
+function handleSelection() {
+    updateToolbarPosition();
+    updateToolbarState();
+}
+
+function updateToolbarState() {
+    const toolbar = document.getElementById('formattingToolbar');
+    const buttons = toolbar.querySelectorAll('button[data-command]');
+    
+    buttons.forEach(button => {
+        const command = button.dataset.command;
+        try {
+            const state = document.queryCommandState(command);
+            button.classList.toggle('active', state);
+        } catch (e) {
+            console.warn(`Command state check failed for: ${command}`);
+        }
+    });
+
+    // Update font size selector
+    const fontSizeSelector = toolbar.querySelector('.font-size-selector');
+    if (fontSizeSelector) {
+        const size = document.queryCommandValue('fontSize');
+        if (size) {
+            fontSizeSelector.value = size;
+        }
+    }
+}
+
 function updateToolbarPosition() {
     const toolbar = document.getElementById('formattingToolbar');
+    const editor = document.getElementById('noteBody');
+    
+    // Get cursor position
     const selection = window.getSelection();
-
-    if (selection.rangeCount === 0) {
-        toolbar.style.display = 'none';
-        return;
-    }
+    if (!selection.rangeCount) return;
 
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
-
+    
+    // If no selection, use caret position
     if (rect.width === 0) {
-        toolbar.style.display = 'none';
-        return;
+        const clonedRange = range.cloneRange();
+        const span = document.createElement('span');
+        span.textContent = '|';
+        clonedRange.insertNode(span);
+        const spanRect = span.getBoundingClientRect();
+        span.remove();
+        
+        // Position toolbar above the cursor
+        const editorRect = editor.getBoundingClientRect();
+        const toolbarHeight = toolbar.offsetHeight;
+        
+        toolbar.style.position = 'fixed';
+        toolbar.style.left = `${spanRect.left}px`;
+        toolbar.style.top = `${spanRect.top - toolbarHeight - 10}px`;
+    } else {
+        // Position toolbar above the selection
+        toolbar.style.position = 'fixed';
+        toolbar.style.left = `${rect.left}px`;
+        toolbar.style.top = `${rect.top - toolbar.offsetHeight - 10}px`;
     }
 
-    // Get the cursor position
-    const editorRect = noteBody.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-    // Position toolbar to the top right of the cursor
-    toolbar.style.display = 'block';
-    toolbar.style.left = `${rect.right + scrollLeft}px`;
-    toolbar.style.top = `${rect.top + scrollTop - toolbar.offsetHeight}px`;
-
-    // Keep toolbar within editor bounds
+    // Keep toolbar within window bounds
     const toolbarRect = toolbar.getBoundingClientRect();
-    if (toolbarRect.right > editorRect.right) {
-        toolbar.style.left = `${rect.left + scrollLeft - toolbar.offsetWidth}px`;
+    if (toolbarRect.left < 0) {
+        toolbar.style.left = '0px';
     }
-    if (toolbarRect.top < editorRect.top) {
-        toolbar.style.top = `${rect.bottom + scrollTop}px`;
+    if (toolbarRect.right > window.innerWidth) {
+        toolbar.style.left = `${window.innerWidth - toolbarRect.width}px`;
     }
 }
 
@@ -428,6 +486,19 @@ function initializeEditor() {
 
     // Initialize rich text editing
     initializeRichTextEditor();
+
+    // Add word count update functionality
+    const wordCountElement = document.getElementById('wordCount');
+    
+    function updateWordCount() {
+        const text = noteBody.textContent || '';
+        const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        const chars = text.length;
+        wordCountElement.textContent = `${words} words | ${chars} chars`;
+    }
+
+    noteBody.addEventListener('input', updateWordCount);
+    updateWordCount(); // Initial count
 }
 
 function saveNoteContent() {
