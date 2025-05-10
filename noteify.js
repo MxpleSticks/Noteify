@@ -393,10 +393,24 @@ function initializeRichTextEditor() {
 
     // Handle font size selection
     const fontSizeSelector = toolbar.querySelector('.font-size-selector');
-    fontSizeSelector.addEventListener('change', (e) => {
-        document.execCommand('fontSize', false, e.target.value);
-        editor.focus();
-    });
+    if (fontSizeSelector) {
+        fontSizeSelector.addEventListener('change', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.execCommand('fontSize', false, e.target.value);
+            editor.focus();
+            updateToolbarState();
+        });
+
+        // Prevent toolbar from hiding when clicking the select
+        fontSizeSelector.addEventListener('mousedown', (e) => {
+            e.stopPropagation();
+        });
+
+        fontSizeSelector.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    }
 
     // Update toolbar state on selection change
     document.addEventListener('selectionchange', updateToolbarState);
