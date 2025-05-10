@@ -572,10 +572,11 @@ body {
     margin: 0 2px;
     cursor: pointer;
     height: 28px;  /* Match button height */
-}
-
-.formatting-toolbar .font-size-selector:hover {
-    background-color: var(--button-hover);
+    min-width: 80px; /* Add minimum width */
+    outline: none;
+    -webkit-appearance: menulist; /* For Safari/Chrome */
+    -moz-appearance: menulist; /* For Firefox */
+    appearance: menulist; /* Standard */
 }
 
 .toolbar-icon {
